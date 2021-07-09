@@ -1,4 +1,4 @@
-# goopas-demo
+# demo
 
 ```
 1, docker-compose up -d --build
