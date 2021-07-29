@@ -1,3 +1,8 @@
-from django.db import models
+from django_celery_results.models import TaskResult
+from django.utils.functional import cached_property
 
-# Create your models here.
+class PlayerTaskResult(TaskResult):
+
+    @cached_property
+    def display_state(self):
+        return self.status
