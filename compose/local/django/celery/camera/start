@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+celery -A app events -l info --camera tasks.camera.DumpCam --frequency=2.0

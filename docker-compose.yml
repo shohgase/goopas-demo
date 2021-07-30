@@ -1,15 +1,18 @@
-version: '3'
+version: '3.8'
 services:
   ap:
     restart: always
-    build: .
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    command: /start
     volumes:
       - .:/app
     ports:
       - "8000:8000"
     depends_on:
-      - db
       - redis
+      - db
     tty: true
   db:
     image: mysql:5.7
@@ -32,21 +35,45 @@ services:
   celery:
     build:
       context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    volumes:
+      - .:/app
     image: celery:latest
     depends_on:
-      - db
       - redis
+      - db
     volumes_from:
       - ap
     working_dir: /app
     tty: true
-  celeryflower:
+    command: /start-celeryworker
+  celery_monitor:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    volumes:
+      - .:/app
+    image: celery:latest
+    depends_on:
+      - redis
+      - db
+    volumes_from:
+      - ap
+    working_dir: /app
+    tty: true
+    command: /start-celerycamera
+  celery_flower:
     restart: always
     build:
       context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    volumes:
+      - .:/app
     ports:
       - 5557:5555
     depends_on:
       - redis
+      - db
     tty: true
+    command: /start-celeryflower
 
